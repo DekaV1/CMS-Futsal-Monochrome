@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+		<meta name="description" content="" />
+		<meta name="author" content="" />
+
+		<title>Tournament Management</title>
+
+		<!-- Custom fonts for this template-->
+		<link
+			href="assets/vendor/fontawesome-free/css/all.min.css"
+			rel="stylesheet"
+			type="text/css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+			rel="stylesheet"
+		/>
+
+		<!-- Custom styles for this template-->
+		<link href="assets/css/sb-admin-2.min.css" rel="stylesheet" />
+		<link href="assets/css/style-bar.css" rel="stylesheet" />
+		<link
+			href="assets/vendor/datatables/dataTables.bootstrap4.min.css"
+			rel="stylesheet"
+		/>
+
+		<style>
+			.tournament-card {
+				transition: all 0.3s ease;
+				border: none;
+				box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+				cursor: pointer;
+			}
+
+			.tournament-card:hover {
+				transform: translateY(-3px);
+				box-shadow: 0 0.25rem 2rem 0 rgba(58, 59, 69, 0.25);
+			}
+
+			.tournament-status {
+				padding: 0.25rem 0.75rem;
+				border-radius: 0.25rem;
+				font-size: 0.875rem;
+				font-weight: 600;
+			}
+
+			.status-upcoming {
+				background-color: #fff3cd;
+				color: #856404;
+			}
+
+			.status-ongoing {
+				background-color: #d4edda;
+				color: #155724;
+			}
+
+			.status-finished {
+				background-color: #d1ecf1;
+				color: #0c5460;
+			}
+
+			.status-cancelled {
+				background-color: #f8d7da;
+				color: #721c24;
+			}
+
+			.bracket-container {
+				overflow-x: auto;
+				padding: 20px;
+				background: #f8f9fc;
+				border-radius: 0.35rem;
+			}
+
+			.bracket {
+				display: flex;
+				gap: 50px;
+				min-width: 800px;
+			}
+
+			.round {
+				display: flex;
+				flex-direction: column;
+				gap: 20px;
+				min-width: 150px;
+			}
+
+			.round-title {
+				text-align: center;
+				font-weight: bold;
+				color: #5a5c69;
+				margin-bottom: 10px;
+			}
+
+			.match {
+				background: white;
+				border-radius: 8px;
+				padding: 10px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				border: 2px solid #e3e6f0;
+			}
+
+			.match-team {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 8px 0;
+				border-bottom: 1px solid #e3e6f0;
+			}
+
+			.match-team:last-child {
+				border-bottom: none;
+			}
+
+			.match-team.winner {
+				background-color: #d4edda;
+				font-weight: bold;
+			}
+
+			.team-name {
+				font-size: 0.9rem;
+			}
+
+			.team-score {
+				font-weight: bold;
+				color: #5a5c69;
+			}
+
+			.match-time {
+				text-align: center;
+				font-size: 0.8rem;
+				color: #6c757d;
+				margin-top: 5px;
+			}
+
+			.team-badge {
+				display: inline-block;
+				padding: 0.25rem 0.5rem;
+				font-size: 0.75rem;
+				font-weight: 600;
+				border-radius: 0.25rem;
+				margin-right: 0.5rem;
+			}
+
+			.team-badge-primary {
+				background-color: #4e73df;
+				color: white;
+			}
+
+			.team-badge-success {
+				background-color: #1cc88a;
+				color: white;
+			}
+
+			.team-badge-warning {
+				background-color: #f6c23e;
+				color: white;
+			}
+
+			.team-badge-info {
+				background-color: #36b9cc;
+				color: white;
+			}
+
+			.registration-form {
+				background: white;
+				border-radius: 0.35rem;
+				padding: 1.5rem;
+				box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+			}
+
+			.team-list {
+				max-height: 300px;
+				overflow-y: auto;
+			}
+
+			.team-item {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0.75rem;
+				border-bottom: 1px solid #e3e6f0;
+			}
+
+			.team-item:last-child {
+				border-bottom: none;
+			}
+
+			.prize-pool {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				border-radius: 0.35rem;
+				padding: 1.5rem;
+				text-align: center;
+			}
+
+			.prize-amount {
+				font-size: 2rem;
+				font-weight: bold;
+				margin: 0.5rem 0;
+			}
+		</style>
+	</head>
+
+	<body id="page-top">
+		<!-- Page Wrapper -->
+		<div id="wrapper">
+			<!-- Sidebar -->
+			<ul
+				class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+				id="accordionSidebar"
+			>
+				<!-- Sidebar - Brand -->
+				<a
+					class="sidebar-brand d-flex align-items-center justify-content-center"
+					href="index.html"
+				>
+					<img
+						src="assets/img/logo-lapangin.png"
+						style="height: 50px; width: 50px"
+					/>
+					<div class="sidebar-brand-text mx-3">Lapangin</div>
+				</a>
+
+				<!-- Divider -->
+				<hr class="sidebar-divider" />
+
+				<!-- Nav Items -->
+				<li class="nav-item">
+					<a class="nav-link" href="dashboard.html">
+						<img
+							src="assets/img/icdashboard.png"
+							style="height: 25px; width: 25px"
+						/>
+						<span>Dashboard</span></a
+					>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="booking.html">
+						<img
+							src="assets/img/ickelolabooking.png"
+							style="height: 25px; width: 25px"
+						/>
+						<span>Booking</span></a
+					>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="turnamen.html">
+						<img
+							src="assets/img/ickelolaturnamen.png"
+							style="height: 25px; width: 25px"
+						/>
+						<span>Turnamen</span></a
+					>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="lapangan.html">
+						<img
+							src="assets/img/ickelolalapangan.png"
+							style="height: 25px; width: 25px"
+						/>
+						<span>Lapangan</span></a
+					>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="unduh.html">
+						<img
+							src="assets/img/icunduhlaporan.png"
+							style="height: 25px; width: 25px; margin-right: 6px"
+						/>
+						<span>Unduh Laporan</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="index.html">
+						<img
+							src="assets/img/ickeluar.png"
+							style="height: 25px; width: 25px"
+						/>
+						<span>Keluar</span></a
+					>
+				</li>
+			</ul>
+			<!-- End of Sidebar -->
+
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- Main Content -->
+				<div id="content">
+					<!-- Topbar -->
+					<nav
+						class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+					>
+						<!-- Sidebar Toggle (Topbar) -->
+						<button
+							id="sidebarToggleTop"
+							class="btn btn-link d-md-none rounded-circle mr-3"
+						>
+							<i class="fa fa-bars"></i>
+						</button>
+
+						<!-- Topbar Navbar -->
+						<ul class="navbar-nav ml-auto">
+							<li class="nav-item dropdown no-arrow">
+								<a
+									class="nav-link dropdown-toggle"
+									href="#"
+									id="userDropdown"
+									role="button"
+									data-toggle="dropdown"
+									aria-haspopup="true"
+									aria-expanded="false"
+								>
+									<div class="mr-2 text-gray-600 small d-block">Admin</div>
+									<div class="mr-2 text-gray-600 small d-block">
+										Lapangin Futsal
+									</div>
+									<div class="topbar-divider d-none d-sm-block"></div>
+									<div class="mr-2 text-gray-600 d-block">Ferdy</div>
+									<img
+										class="img-profile rounded-circle"
+										src="assets/img/profile/default.png"
+									/>
+								</a>
+								<!-- Dropdown - User Information -->
+								<div
+									class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+									aria-labelledby="userDropdown"
+								>
+									<a class="dropdown-item" href="#">
+										<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+										Profil
+									</a>
+									<div class="dropdown-divider"></div>
+									<a
+										class="dropdown-item"
+										href="#"
+										data-toggle="modal"
+										data-target="#logoutModal"
+									>
+										<i
+											class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
+										></i>
+										Logout
+									</a>
+								</div>
+							</li>
+						</ul>
+					</nav>
+					<!-- End of Topbar -->
+
+					<!-- Begin Page Content -->
+					<div class="container-fluid">
+						<!-- Page Heading -->
+						<div class="d-flex justify-content-between align-items-center mb-4">
+							<h1 class="h3 mb-0 text-gray-800">Tournament Management</h1>
+							<button
+								class="btn btn-primary"
+								data-toggle="modal"
+								data-target="#newTournamentModal"
+							>
+								<i class="fas fa-plus fa-sm fa-fw mr-2"></i>
+								Buat Turnamen Baru
+							</button>
+						</div>
+
+						<!-- Tournament Stats Row -->
+						<div class="row mb-4">
+							<div class="col-xl-3 col-md-6 mb-4">
+								<div class="card border-left-primary shadow h-100 py-2">
+									<div class="card-body">
+										<div class="row no-gutters align-items-center">
+											<div class="col mr-2">
+												<div
+													class="text-xs font-weight-bold text-primary text-uppercase mb-1"
+												>
+													Total Turnamen
+												</div>
+												<div class="h5 mb-0 font-weight-bold text-gray-800">
+													15
+												</div>
+											</div>
+											<div class="col-auto">
+												<i class="fas fa-trophy fa-2x text-gray-300"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-xl-3 col-md-6 mb-4">
+								<div class="card border-left-success shadow h-100 py-2">
+									<div class="card-body">
+										<div class="row no-gutters align-items-center">
+											<div class="col mr-2">
+												<div
+													class="text-xs font-weight-bold text-success text-uppercase mb-1"
+												>
+													Turnamen Aktif
+												</div>
+												<div class="h5 mb-0 font-weight-bold text-gray-800">
+													3
+												</div>
+											</div>
+											<div class="col-auto">
+												<i class="fas fa-play-circle fa-2x text-gray-300"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-xl-3 col-md-6 mb-4">
+								<div class="card border-left-warning shadow h-100 py-2">
+									<div class="card-body">
+										<div class="row no-gutters align-items-center">
+											<div class="col mr-2">
+												<div
+													class="text-xs font-weight-bold text-warning text-uppercase mb-1"
+												>
+													Tim Terdaftar
+												</div>
+												<div class="h5 mb-0 font-weight-bold text-gray-800">
+													48
+												</div>
+											</div>
+											<div class="col-auto">
+												<i class="fas fa-users fa-2x text-gray-300"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-xl-3 col-md-6 mb-4">
+								<div class="card border-left-info shadow h-100 py-2">
+									<div class="card-body">
+										<div class="row no-gutters align-items-center">
+											<div class="col mr-2">
+												<div
+													class="text-xs font-weight-bold text-info text-uppercase mb-1"
+												>
+													Total Prize Pool
+												</div>
+												<div class="h5 mb-0 font-weight-bold text-gray-800">
+													Rp 25.000.000
+												</div>
+											</div>
+											<div class="col-auto">
+												<i
+													class="fas fa-money-bill-wave fa-2x text-gray-300"
+												></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Current Tournaments -->
+						<div class="row mb-4">
+							<div class="col-lg-8">
+								<div class="card shadow mb-4">
+									<div class="card-header py-3">
+										<h6 class="m-0 font-weight-bold text-primary">
+											Turnamen Saat Ini
+										</h6>
+									</div>
+									<div class="card-body">
+										<div class="row">
+											<!-- Tournament Card 1 -->
+											<div class="col-md-6 mb-3">
+												<div
+													class="tournament-card card h-100"
+													onclick="showTournamentDetail('summer-cup-2025')"
+												>
+													<div class="card-body">
+														<div
+															class="d-flex justify-content-between align-items-start mb-2"
+														>
+															<h6 class="card-title font-weight-bold">
+																Summer Cup 2025
+															</h6>
+															<span class="tournament-status status-ongoing"
+																>Berlangsung</span
+															>
+														</div>
+														<p class="card-text text-muted small mb-2">
+															16 Tim • Eliminasi Tunggal
+														</p>
+														<div class="row text-center">
+															<div class="col-4">
+																<small class="text-muted">Prize Pool</small>
+																<div class="font-weight-bold">Rp 10M</div>
+															</div>
+															<div class="col-4">
+																<small class="text-muted">Partisipan</small>
+																<div class="font-weight-bold">16/16</div>
+															</div>
+															<div class="col-4">
+																<small class="text-muted">Match</small>
+																<div class="font-weight-bold">Semifinal</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Tournament Card 2 -->
+											<div class="col-md-6 mb-3">
+												<div
+													class="tournament-card card h-100"
+													onclick="showTournamentDetail('league-futsal-2025')"
+												>
+													<div class="card-body">
+														<div
+															class="d-flex justify-content-between align-items-start mb-2"
+														>
+															<h6 class="card-title font-weight-bold">
+																Liga Futsal 2025
+															</h6>
+															<span class="tournament-status status-upcoming"
+																>Mendatang</span
+															>
+														</div>
+														<p class="card-text text-muted small mb-2">
+															12 Tim • Round Robin
+														</p>
+														<div class="row text-center">
+															<div class="col-4">
+																<small class="text-muted">Prize Pool</small>
+																<div class="font-weight-bold">Rp 8M</div>
+															</div>
+															<div class="col-4">
+																<small class="text-muted">Partisipan</small>
+																<div class="font-weight-bold">8/12</div>
+															</div>
+															<div class="col-4">
+																<small class="text-muted">Mulai</small>
+																<div class="font-weight-bold">30 Jun</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Tournament Card 3 -->
+											<div class="col-md-6 mb-3">
+												<div
+													class="tournament-card card h-100"
+													onclick="showTournamentDetail('ramadan-cup-2025')"
+												>
+													<div class="card-body">
+														<div
+															class="d-flex justify-content-between align-items-start mb-2"
+														>
+															<h6 class="card-title font-weight-bold">
+																Ramadan Cup 2025
+															</h6>
+															<span class="tournament-status status-finished"
+																>Selesai</span
+															>
+														</div>
+														<p class="card-text text-muted small mb-2">
+															8 Tim • Eliminasi Tunggal
+														</p>
+														<div class="row text-center">
+															<div class="col-4">
+																<small class="text-muted">Juara</small>
+																<div class="font-weight-bold">Fire Team</div>
+															</div>
+															<div class="col-4">
+																<small class="text-muted">Runner Up</small>
+																<div class="font-weight-bold">Eagles FC</div>
+															</div>
+															<div class="col-4">
+																<small class="text-muted">Prize</small>
+																<div class="font-weight-bold">Rp 5M</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Tournament Card 4 -->
+											<div class="col-md-6 mb-3">
+												<div
+													class="tournament-card card h-100"
+													onclick="showTournamentDetail('youth-championship-2025')"
+												>
+													<div class="card-body">
+														<div
+															class="d-flex justify-content-between align-items-start mb-2"
+														>
+															<h6 class="card-title font-weight-bold">
+																Youth Championship
+															</h6>
+															<span class="tournament-status status-upcoming"
+																>Mendatang</span
+															>
+														</div>
+														<p class="card-text text-muted small mb-2">
+															20 Tim • Grup + Eliminasi
+														</p>
+														<div class="row text-center">
+															<div class="col-4">
+																<small class="text-muted">Prize Pool</small>
+																<div class="font-weight-bold">Rp 7M</div>
+															</div>
+															<div class="col-4">
+																<small class="text-muted">Partisipan</small>
+																<div class="font-weight-bold">12/20</div>
+															</div>
+															<div class="col-4">
+																<small class="text-muted">Mulai</small>
+																<div class="font-weight-bold">15 Jul</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-4">
+								<!-- Prize Pool Summary -->
+
+								<!-- Recent Registrations -->
+								<div class="card shadow mb-4">
+									<div class="card-header py-3">
+										<h6 class="m-0 font-weight-bold text-primary">
+											Pendaftaran Terbaru
+										</h6>
+									</div>
+									<div class="card-body">
+										<div class="team-list">
+											<div class="team-item">
+												<div>
+													<div class="font-weight-bold">Thunder United</div>
+													<small class="text-muted">Liga Futsal 2025</small>
+												</div>
+												
+											</div>
+											<div class="team-item">
+												<div>
+													<div class="font-weight-bold">Storm Riders</div>
+													<small class="text-muted">Youth Championship</small>
+												</div>
+												
+											</div>
+											<div class="team-item">
+												<div>
+													<div class="font-weight-bold">Phoenix FC</div>
+													<small class="text-muted">Liga Futsal 2025</small>
+												</div>
+												
+												
+											</div>
+											<div class="team-item">
+												<div>
+													<div class="font-weight-bold">Velocity Team</div>
+													<small class="text-muted">Youth Championship</small>
+												</div>
+												
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Tournament Bracket Section -->
+						<div class="row mb-4">
+							<div class="col-lg-12">
+								<div class="card shadow mb-4">
+									<div
+										class="card-header py-3 d-flex justify-content-between align-items-center"
+									>
+										<h6 class="m-0 font-weight-bold text-primary">
+											Bracket Summer Cup 2025
+										</h6>
+										<div>
+											<button class="btn btn-sm btn-outline-primary mr-2">
+												<i class="fas fa-print mr-1"></i>Print Bracket
+											</button>
+											<button class="btn btn-sm btn-primary">
+												<i class="fas fa-edit mr-1"></i>Update Score
+											</button>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="bracket-container">
+											<div class="bracket" id="tournamentBracket">
+												<!-- Bracket will be generated by JavaScript -->
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Tournament List Table -->
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="card shadow mb-4">
+									<div class="card-header py-3">
+										<h6 class="m-0 font-weight-bold text-primary">
+											Semua Turnamen
+										</h6>
+									</div>
+									<div class="card-body">
+										<div class="table-responsive">
+											<table
+												class="table table-bordered"
+												id="tournamentsTable"
+												width="100%"
+												cellspacing="0"
+											>
+												<thead>
+													<tr>
+														<th>Nama Turnamen</th>
+														<th>Format</th>
+														<th>Tim Terdaftar</th>
+														<th>Prize Pool</th>
+														<th>Tanggal Mulai</th>
+														<th>Status</th>
+														<th>Aksi</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>Summer Cup 2025</td>
+														<td>Eliminasi Tunggal (16 Tim)</td>
+														<td>16/16</td>
+														<td>Rp 10.000.000</td>
+														<td>20/06/2025</td>
+														<td>
+															<span class="tournament-status status-ongoing"
+																>Berlangsung</span
+															>
+														</td>
+														<td>
+															<button
+																class="btn btn-info btn-sm"
+																title="Detail"
+																onclick="showDetailModal('summer-cup-2025')"
+															>
+																<i class="fas fa-eye"></i>
+															</button>
+															<button
+																class="btn btn-warning btn-sm"
+																title="Edit"
+																onclick="showEditModal('summer-cup-2025')"
+															>
+																<i class="fas fa-edit"></i>
+															</button>
+														</td>
+													</tr>
+													<tr>
+														<td>Liga Futsal 2025</td>
+														<td>Round Robin (12 Tim)</td>
+														<td>8/12</td>
+														<td>Rp 8.000.000</td>
+														<td>30/06/2025</td>
+														<td>
+															<span class="tournament-status status-upcoming"
+																>Mendatang</span
+															>
+														</td>
+														<td>
+															<button
+																class="btn btn-warning btn-sm"
+																title="Edit"
+																onclick="showEditModal('liga-futsal-2025')"
+															>
+																<i class="fas fa-edit"></i>
+															</button>
+															<button
+																class="btn btn-primary btn-sm"
+																title="Register Team"
+																onclick="showRegisterModal('liga-futsal-2025')"
+															>
+																<i class="fas fa-user-plus"></i>
+															</button>
+														</td>
+													</tr>
+													<tr>
+														<td>Ramadan Cup 2025</td>
+														<td>Eliminasi Tunggal (8 Tim)</td>
+														<td>8/8</td>
+														<td>Rp 5.000.000</td>
+														<td>15/04/2025</td>
+														<td>
+															<span class="tournament-status status-finished"
+																>Selesai</span
+															>
+														</td>
+														<td>
+															<button
+																class="btn btn-info btn-sm"
+																title="Detail"
+																onclick="showDetailModal('ramadan-cup-2025')"
+															>
+																<i class="fas fa-eye"></i>
+															</button>
+															<button
+																class="btn btn-secondary btn-sm"
+																title="Results"
+																onclick="showResultsModal('ramadan-cup-2025')"
+															>
+																<i class="fas fa-trophy"></i>
+															</button>
+														</td>
+													</tr>
+													<tr>
+														<td>Youth Championship</td>
+														<td>Grup + Eliminasi (20 Tim)</td>
+														<td>12/20</td>
+														<td>Rp 7.000.000</td>
+														<td>15/07/2025</td>
+														<td>
+															<span class="tournament-status status-upcoming"
+																>Mendatang</span
+															>
+														</td>
+														<td>
+															<button
+																class="btn btn-warning btn-sm"
+																title="Edit"
+																onclick="showEditModal('youth-championship-2025')"
+															>
+																<i class="fas fa-edit"></i>
+															</button>
+															<button
+																class="btn btn-primary btn-sm"
+																title="Register Team"
+																onclick="showRegisterModal('youth-championship-2025')"
+															>
+																<i class="fas fa-user-plus"></i>
+															</button>
+														</td>
+													</tr>
+													<tr>
+														<td>Winter League 2024</td>
+														<td>Round Robin (10 Tim)</td>
+														<td>10/10</td>
+														<td>Rp 6.000.000</td>
+														<td>20/12/2024</td>
+														<td>
+															<span class="tournament-status status-finished"
+																>Selesai</span
+															>
+														</td>
+														<td>
+															<button
+																class="btn btn-info btn-sm"
+																title="Detail"
+																onclick="showDetailModal('winter-league-2024')"
+															>
+																<i class="fas fa-eye"></i>
+															</button>
+															<button
+																class="btn btn-secondary btn-sm"
+																title="Results"
+																onclick="showResultsModal('winter-league-2024')"
+															>
+																<i class="fas fa-trophy"></i>
+															</button>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /.container-fluid -->
+				</div>
+				<!-- End of Main Content -->
+
+				<!-- Footer -->
+				<footer class="sticky-footer bg-white">
+					<div class="container my-auto">
+						<div class="copyright text-center my-auto">
+							<span>Copyright &copy; Lapangin 2023</span>
+						</div>
+					</div>
+				</footer>
+				<!-- End of Footer -->
+			</div>
+			<!-- End of Content Wrapper -->
+		</div>
+		<!-- End of Page Wrapper -->
+
+		<!-- Scroll to Top Button-->
+		<a class="scroll-to-top rounded" href="#page-top">
+			<i class="fas fa-angle-up"></i>
+		</a>
+
+		<!-- New Tournament Modal -->
+		<div
+			class="modal fade"
+			id="newTournamentModal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="newTournamentModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="newTournamentModalLabel">
+							<i class="fas fa-trophy mr-2"></i>Buat Turnamen Baru
+						</h5>
+						<button
+							type="button"
+							class="close"
+							data-dismiss="modal"
+							aria-label="Close"
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form id="tournamentForm">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="tournamentName">Nama Turnamen</label>
+										<input
+											type="text"
+											class="form-control"
+											id="tournamentName"
+											required
+										/>
+									</div>
+									<div class="form-group">
+										<label for="tournamentFormat">Format Turnamen</label>
+										<select class="form-control" id="tournamentFormat" required>
+											<option value="">-- Pilih Format --</option>
+											<option value="elimination">Eliminasi Tunggal</option>
+											<option value="double-elimination">
+												Eliminasi Ganda
+											</option>
+											<option value="round-robin">Round Robin</option>
+											<option value="group-elimination">
+												Grup + Eliminasi
+											</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="maxTeams">Maksimal Tim</label>
+										<select class="form-control" id="maxTeams" required>
+											<option value="">-- Pilih Jumlah --</option>
+											<option value="4">4 Tim</option>
+											<option value="8">8 Tim</option>
+											<option value="12">12 Tim</option>
+											<option value="16">16 Tim</option>
+											<option value="20">20 Tim</option>
+											<option value="32">32 Tim</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="registrationFee">Biaya Pendaftaran</label>
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<span class="input-group-text">Rp</span>
+											</div>
+											<input
+												type="number"
+												class="form-control"
+												id="registrationFee"
+												required
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="startDate">Tanggal Mulai</label>
+										<input
+											type="date"
+											class="form-control"
+											id="startDate"
+											required
+										/>
+									</div>
+									<div class="form-group">
+										<label for="endDate">Tanggal Selesai</label>
+										<input
+											type="date"
+											class="form-control"
+											id="endDate"
+											required
+										/>
+									</div>
+									<div class="form-group">
+										<label for="registrationDeadline"
+											>Deadline Pendaftaran</label
+										>
+										<input
+											type="date"
+											class="form-control"
+											id="registrationDeadline"
+											required
+										/>
+									</div>
+									<div class="form-group">
+										<label for="prizePool">Total Prize Pool</label>
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<span class="input-group-text">Rp</span>
+											</div>
+											<input
+												type="number"
+												class="form-control"
+												id="prizePool"
+												required
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="tournamentRules">Peraturan Turnamen</label>
+								<textarea
+									class="form-control"
+									id="tournamentRules"
+									rows="4"
+									placeholder="Masukkan peraturan dan ketentuan turnamen..."
+								></textarea>
+							</div>
+							<div class="form-group">
+								<label for="description">Deskripsi</label>
+								<textarea
+									class="form-control"
+									id="description"
+									rows="3"
+									placeholder="Deskripsi singkat tentang turnamen..."
+								></textarea>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="btn btn-secondary"
+							data-dismiss="modal"
+						>
+							<i class="fas fa-times mr-2"></i>Batal
+						</button>
+						<button type="button" class="btn btn-primary" id="saveTournament">
+							<i class="fas fa-save mr-2"></i>Buat Turnamen
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Tournament Detail Modal -->
+		<div
+			class="modal fade"
+			id="tournamentDetailModal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="tournamentDetailModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-xl" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="tournamentDetailModalLabel">
+							<i class="fas fa-info-circle mr-2"></i>Detail Turnamen
+						</h5>
+						<button
+							type="button"
+							class="close"
+							data-dismiss="modal"
+							aria-label="Close"
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="tournamentDetailContent">
+						<!-- Content will be loaded dynamically -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Logout Modal-->
+		<div
+			class="modal fade"
+			id="logoutModal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="exampleModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+						<button
+							class="close"
+							type="button"
+							data-dismiss="modal"
+							aria-label="Close"
+						>
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						Select "Logout" below if you are ready to end your current session.
+					</div>
+					<div class="modal-footer">
+						<button
+							class="btn btn-secondary"
+							type="button"
+							data-dismiss="modal"
+						>
+							Cancel
+						</button>
+						<a class="btn btn-primary" href="index.html">Logout</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Edit Tournament Modal -->
+		<div class="modal fade" id="editTournamentModal" tabindex="-1" role="dialog" aria-labelledby="editTournamentModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editTournamentModalLabel">
+							<i class="fas fa-edit mr-2"></i>Edit Turnamen
+						</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form id="editTournamentForm">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="editTournamentName">Nama Turnamen</label>
+										<input type="text" class="form-control" id="editTournamentName" required />
+									</div>
+									<div class="form-group">
+										<label for="editTournamentFormat">Format Turnamen</label>
+										<select class="form-control" id="editTournamentFormat" required>
+											<option value="elimination">Eliminasi Tunggal</option>
+											<option value="double-elimination">Eliminasi Ganda</option>
+											<option value="round-robin">Round Robin</option>
+											<option value="group-elimination">Grup + Eliminasi</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="editMaxTeams">Maksimal Tim</label>
+										<select class="form-control" id="editMaxTeams" required>
+											<option value="4">4 Tim</option>
+											<option value="8">8 Tim</option>
+											<option value="12">12 Tim</option>
+											<option value="16">16 Tim</option>
+											<option value="20">20 Tim</option>
+											<option value="32">32 Tim</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="editStartDate">Tanggal Mulai</label>
+										<input type="date" class="form-control" id="editStartDate" required />
+									</div>
+									<div class="form-group">
+										<label for="editEndDate">Tanggal Selesai</label>
+										<input type="date" class="form-control" id="editEndDate" required />
+									</div>
+									<div class="form-group">
+										<label for="editPrizePool">Total Prize Pool</label>
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<span class="input-group-text">Rp</span>
+											</div>
+											<input type="number" class="form-control" id="editPrizePool" required />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="editDescription">Deskripsi</label>
+								<textarea class="form-control" id="editDescription" rows="3"></textarea>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">
+							<i class="fas fa-times mr-2"></i>Batal
+						</button>
+						<button type="button" class="btn btn-primary" onclick="saveEditTournament()">
+							<i class="fas fa-save mr-2"></i>Simpan Perubahan
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Register Team Modal -->
+		<div class="modal fade" id="registerTeamModal" tabindex="-1" role="dialog" aria-labelledby="registerTeamModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="registerTeamModalLabel">
+							<i class="fas fa-user-plus mr-2"></i>Daftarkan Tim
+						</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-info">
+							<i class="fas fa-info-circle mr-2"></i>
+							<span id="tournamentInfo">Mendaftarkan tim untuk turnamen...</span>
+						</div>
+						<form id="registerTeamForm">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="teamName">Nama Tim</label>
+										<input type="text" class="form-control" id="teamName" required />
+									</div>
+									<div class="form-group">
+										<label for="captainName">Nama Kapten</label>
+										<input type="text" class="form-control" id="captainName" required />
+									</div>
+									<div class="form-group">
+										<label for="captainPhone">No. Telepon Kapten</label>
+										<input type="tel" class="form-control" id="captainPhone" required />
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="captainEmail">Email Kapten</label>
+										<input type="email" class="form-control" id="captainEmail" required />
+									</div>
+									<div class="form-group">
+										<label for="teamCategory">Kategori Tim</label>
+										<select class="form-control" id="teamCategory" required>
+											<option value="">-- Pilih Kategori --</option>
+											<option value="senior">Senior (18+ tahun)</option>
+											<option value="youth">Youth (16-18 tahun)</option>
+											<option value="junior">Junior (14-16 tahun)</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="teamExperience">Pengalaman Tim</label>
+										<select class="form-control" id="teamExperience">
+											<option value="beginner">Pemula</option>
+											<option value="intermediate">Menengah</option>
+											<option value="advanced">Lanjutan</option>
+											<option value="professional">Profesional</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="teamNotes">Catatan Tambahan</label>
+								<textarea class="form-control" id="teamNotes" rows="3" placeholder="Catatan khusus atau informasi tambahan tentang tim..."></textarea>
+							</div>
+							<div class="form-group">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="agreeTerms" required>
+									<label class="custom-control-label" for="agreeTerms">
+										Saya setuju dengan <a href="#" data-toggle="modal" data-target="#termsModal">syarat dan ketentuan</a> turnamen
+									</label>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">
+							<i class="fas fa-times mr-2"></i>Batal
+						</button>
+						<button type="button" class="btn btn-primary" onclick="saveTeamRegistration()">
+							<i class="fas fa-user-plus mr-2"></i>Daftarkan Tim
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Tournament Detail Modal -->
+		<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-xl" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="detailModalLabel">
+							<i class="fas fa-info-circle mr-2"></i>Detail Turnamen
+						</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="detailModalContent">
+						<!-- Content will be loaded dynamically -->
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">
+							<i class="fas fa-times mr-2"></i>Tutup
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Tournament Results Modal -->
+		<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-xl" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="resultsModalLabel">
+							<i class="fas fa-trophy mr-2"></i>Hasil Turnamen
+						</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="resultsModalContent">
+						<!-- Content will be loaded dynamically -->
+					</div>
+					<div class="modal-footer">
+						
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">
+							<i class="fas fa-times mr-2"></i>Tutup
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript-->
+		<script src="assets/vendor/jquery/jquery.min.js"></script>
+		<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+		<!-- Core plugin JavaScript-->
+		<script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+		<!-- Page level plugins -->
+		<script src="assets/vendor/datatables/jquery.dataTables.min.js"></script>
+		<script src="assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+		<!-- Custom scripts for all pages-->
+		<script src="assets/js/sb-admin-2.min.js"></script>
+
+		<script>
+			// Sample tournament data
+			const tournaments = {
+				"summer-cup-2025": {
+					name: "Summer Cup 2025",
+					format: "Eliminasi Tunggal",
+					teams: 16,
+					maxTeams: 16,
+					prizePool: 10000000,
+					status: "ongoing",
+					startDate: "2025-06-20",
+					endDate: "2025-06-28",
+					description: "Turnamen futsal bergengsi dengan format eliminasi tunggal.",
+					registrationFee: 500000,
+					bracket: {
+						"round-16": [
+							{
+								team1: "Fire Team",
+								team2: "Thunder FC",
+								score1: 3,
+								score2: 1,
+								winner: "Fire Team",
+							},
+							{
+								team1: "Eagles United",
+								team2: "Storm Riders",
+								score1: 2,
+								score2: 0,
+								winner: "Eagles United",
+							},
+							{
+								team1: "Phoenix FC",
+								team2: "Lightning Squad",
+								score1: 1,
+								score2: 2,
+								winner: "Lightning Squad",
+							},
+							{
+								team1: "Velocity Team",
+								team2: "Rapid Stars",
+								score1: 4,
+								score2: 2,
+								winner: "Velocity Team",
+							},
+							{
+								team1: "Blazing Bulls",
+								team2: "Mighty Wolves",
+								score1: 2,
+								score2: 3,
+								winner: "Mighty Wolves",
+							},
+							{
+								team1: "Golden Hawks",
+								team2: "Silver Tigers",
+								score1: 1,
+								score2: 0,
+								winner: "Golden Hawks",
+							},
+							{
+								team1: "Diamond FC",
+								team2: "Crystal United",
+								score1: 3,
+								score2: 3,
+								winner: "Diamond FC",
+							},
+							{
+								team1: "Royal Lions",
+								team2: "Elite Panthers",
+								score1: 0,
+								score2: 1,
+								winner: "Elite Panthers",
+							},
+						],
+						"quarter-final": [
+							{
+								team1: "Fire Team",
+								team2: "Eagles United",
+								score1: 2,
+								score2: 1,
+								winner: "Fire Team",
+							},
+							{
+								team1: "Lightning Squad",
+								team2: "Velocity Team",
+								score1: 1,
+								score2: 3,
+								winner: "Velocity Team",
+							},
+							{
+								team1: "Mighty Wolves",
+								team2: "Golden Hawks",
+								score1: 2,
+								score2: 0,
+								winner: "Mighty Wolves",
+							},
+							{
+								team1: "Diamond FC",
+								team2: "Elite Panthers",
+								score1: 1,
+								score2: 1,
+								winner: "Diamond FC",
+							},
+						],
+						"semi-final": [
+							{
+								team1: "Fire Team",
+								team2: "Velocity Team",
+								score1: null,
+								score2: null,
+								time: "26 Jun, 19:00",
+							},
+							{
+								team1: "Mighty Wolves",
+								team2: "Diamond FC",
+								score1: null,
+								score2: null,
+								time: "26 Jun, 20:30",
+							},
+						],
+						final: [
+							{
+								team1: "TBD",
+								team2: "TBD",
+								score1: null,
+								score2: null,
+								time: "28 Jun, 19:00",
+							},
+						],
+					},
+				},
+				"liga-futsal-2025": {
+					name: "Liga Futsal 2025",
+					format: "Round Robin",
+					teams: 8,
+					maxTeams: 12,
+					prizePool: 8000000,
+					status: "upcoming",
+					startDate: "2025-06-30",
+					endDate: "2025-07-15",
+					description: "Liga futsal dengan sistem round robin.",
+					registrationFee: 400000,
+				},
+				"ramadan-cup-2025": {
+					name: "Ramadan Cup 2025",
+					format: "Eliminasi Tunggal",
+					teams: 8,
+					maxTeams: 8,
+					prizePool: 5000000,
+					status: "finished",
+					startDate: "2025-04-15",
+					endDate: "2025-04-25",
+					description: "Turnamen spesial bulan Ramadan.",
+					registrationFee: 300000,
+					winner: "Fire Team",
+					runnerUp: "Eagles FC",
+					results: {
+						final: { team1: "Fire Team", team2: "Eagles FC", score1: 3, score2: 1 },
+						"3rd-place": { team1: "Thunder United", team2: "Storm FC", score1: 2, score2: 0 }
+					}
+				},
+				"youth-championship-2025": {
+					name: "Youth Championship",
+					format: "Grup + Eliminasi",
+					teams: 12,
+					maxTeams: 20,
+					prizePool: 7000000,
+					status: "upcoming",
+					startDate: "2025-07-15",
+					endDate: "2025-07-30",
+					description: "Turnamen khusus pemain muda.",
+					registrationFee: 350000,
+				},
+				"winter-league-2024": {
+					name: "Winter League 2024",
+					format: "Round Robin",
+					teams: 10,
+					maxTeams: 10,
+					prizePool: 6000000,
+					status: "finished",
+					startDate: "2024-12-20",
+					endDate: "2025-01-10",
+					description: "Liga musim dingin 2024.",
+					registrationFee: 350000,
+					winner: "Ice Wolves",
+					runnerUp: "Frost Giants",
+					results: {
+						final: { team1: "Ice Wolves", team2: "Frost Giants", score1: 4, score2: 2 },
+						"3rd-place": { team1: "Snow Leopards", team2: "Arctic Bears", score1: 1, score2: 0 }
+					}
+				}
+			};
+
+			// Show Edit Modal
+			function showEditModal(tournamentId) {
+				const tournament = tournaments[tournamentId];
+				if (tournament) {
+					document.getElementById('editTournamentName').value = tournament.name;
+					document.getElementById('editTournamentFormat').value = tournament.format.toLowerCase().replace(' ', '-');
+					document.getElementById('editMaxTeams').value = tournament.maxTeams;
+					document.getElementById('editStartDate').value = tournament.startDate;
+					document.getElementById('editEndDate').value = tournament.endDate;
+					document.getElementById('editPrizePool').value = tournament.prizePool;
+					document.getElementById('editDescription').value = tournament.description;
+					
+					// Store tournament ID for saving
+					document.getElementById('editTournamentForm').setAttribute('data-tournament-id', tournamentId);
+					
+					$('#editTournamentModal').modal('show');
+				}
+			}
+
+			// Show Register Team Modal
+			function showRegisterModal(tournamentId) {
+				const tournament = tournaments[tournamentId];
+				if (tournament) {
+					const info = `Mendaftarkan tim untuk ${tournament.name} (${tournament.teams}/${tournament.maxTeams} tim terdaftar)`;
+					document.getElementById('tournamentInfo').textContent = info;
+					
+					// Store tournament ID for saving
+					document.getElementById('registerTeamForm').setAttribute('data-tournament-id', tournamentId);
+					
+					$('#registerTeamModal').modal('show');
+				}
+			}
+
+			// Show Detail Modal
+			function showDetailModal(tournamentId) {
+				const tournament = tournaments[tournamentId];
+				if (tournament) {
+					const content = `
+						<div class="row">
+							<div class="col-md-6">
+								<h5>${tournament.name}</h5>
+								<p><strong>Format:</strong> ${tournament.format}</p>
+								<p><strong>Jumlah Tim:</strong> ${tournament.teams}/${tournament.maxTeams}</p>
+								<p><strong>Prize Pool:</strong> Rp ${tournament.prizePool.toLocaleString('id-ID')}</p>
+								<p><strong>Biaya Pendaftaran:</strong> Rp ${tournament.registrationFee.toLocaleString('id-ID')}</p>
+								<p><strong>Status:</strong> 
+									<span class="tournament-status status-${tournament.status}">
+										${tournament.status === 'ongoing' ? 'Berlangsung' : 
+										  tournament.status === 'upcoming' ? 'Mendatang' : 'Selesai'}
+									</span>
+								</p>
+							</div>
+							<div class="col-md-6">
+								<p><strong>Tanggal Mulai:</strong> ${new Date(tournament.startDate).toLocaleDateString('id-ID')}</p>
+								<p><strong>Tanggal Selesai:</strong> ${new Date(tournament.endDate).toLocaleDateString('id-ID')}</p>
+								<p><strong>Deskripsi:</strong> ${tournament.description}</p>
+								${tournament.winner ? `<p><strong>Juara:</strong> ${tournament.winner}</p>` : ''}
+								${tournament.runnerUp ? `<p><strong>Runner Up:</strong> ${tournament.runnerUp}</p>` : ''}
+							</div>
+						</div>
+						${tournament.bracket ? `
+							<hr>
+							<h6>Status Pertandingan</h6>
+							<div class="alert alert-info">
+								<i class="fas fa-info-circle mr-2"></i>
+								Turnamen sedang berlangsung di tahap semi final.
+							</div>
+						` : ''}
+					`;
+
+					document.getElementById('detailModalContent').innerHTML = content;
+					$('#detailModal').modal('show');
+				}
+			}
+
+			// Show Results Modal
+			function showResultsModal(tournamentId) {
+				const tournament = tournaments[tournamentId];
+				if (tournament && tournament.status === 'finished') {
+					const content = `
+						<div class="row">
+							<div class="col-md-8">
+								<div class="card">
+									<div class="card-header">
+										<h6 class="m-0 font-weight-bold text-primary">Hasil Final ${tournament.name}</h6>
+									</div>
+									<div class="card-body">
+										<div class="row text-center mb-4">
+											<div class="col-md-4">
+												<div class="prize-pool" style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);">
+													<i class="fas fa-trophy fa-3x mb-2"></i>
+													<h5>Juara 1</h5>
+													<h4>${tournament.winner}</h4>
+													<p class="mb-0">Prize: Rp ${(tournament.prizePool * 0.5).toLocaleString('id-ID')}</p>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="prize-pool" style="background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);">
+													<i class="fas fa-medal fa-3x mb-2"></i>
+													<h5>Juara 2</h5>
+													<h4>${tournament.runnerUp}</h4>
+													<p class="mb-0">Prize: Rp ${(tournament.prizePool * 0.3).toLocaleString('id-ID')}</p>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="prize-pool" style="background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 100%);">
+													<i class="fas fa-award fa-3x mb-2"></i>
+													<h5>Juara 3</h5>
+													<h4>${tournament.results ? tournament.results['3rd-place'].team1 : 'Thunder United'}</h4>
+													<p class="mb-0">Prize: Rp ${(tournament.prizePool * 0.2).toLocaleString('id-ID')}</p>
+												</div>
+											</div>
+										</div>
+										
+										${tournament.results ? `
+											<h6>Hasil Pertandingan Final</h6>
+											<div class="match mb-3">
+												<div class="match-team winner">
+													<span class="team-name">${tournament.results.final.team1}</span>
+													<span class="team-score">${tournament.results.final.score1}</span>
+												</div>
+												<div class="match-team">
+													<span class="team-name">${tournament.results.final.team2}</span>
+													<span class="team-score">${tournament.results.final.score2}</span>
+												</div>
+											</div>
+											
+											<h6>Perebutan Juara 3</h6>
+											<div class="match">
+												<div class="match-team winner">
+													<span class="team-name">${tournament.results['3rd-place'].team1}</span>
+													<span class="team-score">${tournament.results['3rd-place'].score1}</span>
+												</div>
+												<div class="match-team">
+													<span class="team-name">${tournament.results['3rd-place'].team2}</span>
+													<span class="team-score">${tournament.results['3rd-place'].score2}</span>
+												</div>
+											</div>
+										` : ''}
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="card">
+									<div class="card-header">
+										<h6 class="m-0 font-weight-bold text-primary">Statistik Turnamen</h6>
+									</div>
+									<div class="card-body">
+										<p><strong>Total Pertandingan:</strong> ${tournament.teams - 1}</p>
+										<p><strong>Total Gol:</strong> 45</p>
+										<p><strong>Pencetak Gol Terbanyak:</strong> Ahmad Fauzi (8 gol)</p>
+										<p><strong>Kiper Terbaik:</strong> Budi Santoso</p>
+										<p><strong>Player of Tournament:</strong> ${tournament.winner} Captain</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					`;
+
+					document.getElementById('resultsModalContent').innerHTML = content;
+					$('#resultsModal').modal('show');
+				}
+			}
+
+			// Save Edit Tournament
+			function saveEditTournament() {
+				const form = document.getElementById('editTournamentForm');
+				const tournamentId = form.getAttribute('data-tournament-id');
+				
+				// Get form values
+				const name = document.getElementById('editTournamentName').value;
+				const format = document.getElementById('editTournamentFormat').value;
+				const maxTeams = document.getElementById('editMaxTeams').value;
+				const startDate = document.getElementById('editStartDate').value;
+				const endDate = document.getElementById('editEndDate').value;
+				const prizePool = document.getElementById('editPrizePool').value;
+				const description = document.getElementById('editDescription').value;
+
+				if (!name || !format || !maxTeams || !startDate || !endDate || !prizePool) {
+					alert('Harap lengkapi semua field yang wajib diisi!');
+					return;
+				}
+
+				// Simulate saving
+				alert(`Turnamen "${name}" berhasil diperbarui!`);
+				$('#editTournamentModal').modal('hide');
+				form.reset();
+			}
+
+			// Save Team Registration
+			function saveTeamRegistration() {
+				const form = document.getElementById('registerTeamForm');
+				const tournamentId = form.getAttribute('data-tournament-id');
+				
+				// Get form values
+				const teamName = document.getElementById('teamName').value;
+				const captainName = document.getElementById('captainName').value;
+				const captainPhone = document.getElementById('captainPhone').value;
+				const captainEmail = document.getElementById('captainEmail').value;
+				const teamCategory = document.getElementById('teamCategory').value;
+				const agreeTerms = document.getElementById('agreeTerms').checked;
+
+				if (!teamName || !captainName || !captainPhone || !captainEmail || !teamCategory || !agreeTerms) {
+					alert('Harap lengkapi semua field yang wajib diisi dan setujui syarat & ketentuan!');
+					return;
+				}
+
+				// Simulate saving
+				alert(`Tim "${teamName}" berhasil didaftarkan!`);
+				$('#registerTeamModal').modal('hide');
+				form.reset();
+			}
+
+			// Download Certificate
+			function downloadCertificate() {
+				alert('Sertifikat sedang dipersiapkan dan akan didownload dalam beberapa saat...');
+			}
+
+			// Generate tournament bracket
+			function generateBracket(tournamentData) {
+				const bracketContainer = document.getElementById("tournamentBracket");
+				bracketContainer.innerHTML = "";
+
+				const rounds = ["round-16", "quarter-final", "semi-final", "final"];
+				const roundNames = [
+					"16 Besar",
+					"Perempat Final",
+					"Semi Final",
+					"Final",
+				];
+
+				rounds.forEach((roundKey, index) => {
+					if (tournamentData.bracket[roundKey]) {
+						const roundDiv = document.createElement("div");
+						roundDiv.className = "round";
+
+						const titleDiv = document.createElement("div");
+						titleDiv.className = "round-title";
+						titleDiv.textContent = roundNames[index];
+						roundDiv.appendChild(titleDiv);
+
+						tournamentData.bracket[roundKey].forEach((match) => {
+							const matchDiv = document.createElement("div");
+							matchDiv.className = "match";
+
+							// Team 1
+							const team1Div = document.createElement("div");
+							team1Div.className = `match-team ${
+								match.winner === match.team1 ? "winner" : ""
+							}`;
+							team1Div.innerHTML = `
+								<span class="team-name">${match.team1}</span>
+								<span class="team-score">${match.score1 !== null ? match.score1 : "-"}</span>
+							`;
+							matchDiv.appendChild(team1Div);
+
+							// Team 2
+							const team2Div = document.createElement("div");
+							team2Div.className = `match-team ${
+								match.winner === match.team2 ? "winner" : ""
+							}`;
+							team2Div.innerHTML = `
+								<span class="team-name">${match.team2}</span>
+								<span class="team-score">${match.score2 !== null ? match.score2 : "-"}</span>
+							`;
+							matchDiv.appendChild(team2Div);
+
+							// Match time
+							if (match.time) {
+								const timeDiv = document.createElement("div");
+								timeDiv.className = "match-time";
+								timeDiv.textContent = match.time;
+								matchDiv.appendChild(timeDiv);
+							}
+
+							roundDiv.appendChild(matchDiv);
+						});
+
+						bracketContainer.appendChild(roundDiv);
+					}
+				});
+			}
+
+			// Show tournament detail
+			function showTournamentDetail(tournamentId) {
+				const tournament = tournaments[tournamentId];
+				if (tournament) {
+					const content = `
+						<div class="row">
+							<div class="col-md-6">
+								<h5>${tournament.name}</h5>
+								<p><strong>Format:</strong> ${tournament.format}</p>
+								<p><strong>Jumlah Tim:</strong> ${tournament.teams}</p>
+								<p><strong>Prize Pool:</strong> Rp ${tournament.prizePool.toLocaleString(
+									"id-ID"
+								)}</p>
+								<p><strong>Status:</strong> <span class="tournament-status status-${
+									tournament.status
+								}">
+									${
+										tournament.status === "ongoing"
+											? "Berlangsung"
+											: tournament.status === "upcoming"
+											? "Mendatang"
+											: "Selesai"
+									}</span></p>
+							</div>
+							<div class="col-md-6">
+								<p><strong>Tanggal Mulai:</strong> ${new Date(
+									tournament.startDate
+								).toLocaleDateString("id-ID")}</p>
+								<p><strong>Tanggal Selesai:</strong> ${new Date(
+									tournament.endDate
+								).toLocaleDateString("id-ID")}</p>
+								<p><strong>Deskripsi:</strong> ${tournament.description}</p>
+							</div>
+						</div>
+						<hr>
+						<h6>Bracket Turnamen</h6>
+						<div class="bracket-container">
+							<div class="bracket" id="detailBracket"></div>
+						</div>
+					`;
+
+					document.getElementById("tournamentDetailContent").innerHTML =
+						content;
+
+					// Generate bracket for detail modal
+					setTimeout(() => {
+						const detailBracketContainer =
+							document.getElementById("detailBracket");
+						const rounds = ["round-16", "quarter-final", "semi-final", "final"];
+						const roundNames = [
+							"16 Besar",
+							"Perempat Final",
+							"Semi Final",
+							"Final",
+						];
+
+						rounds.forEach((roundKey, index) => {
+							if (tournament.bracket[roundKey]) {
+								const roundDiv = document.createElement("div");
+								roundDiv.className = "round";
+
+								const titleDiv = document.createElement("div");
+								titleDiv.className = "round-title";
+								titleDiv.textContent = roundNames[index];
+								roundDiv.appendChild(titleDiv);
+
+								tournament.bracket[roundKey].forEach((match) => {
+									const matchDiv = document.createElement("div");
+									matchDiv.className = "match";
+
+									const team1Div = document.createElement("div");
+									team1Div.className = `match-team ${
+										match.winner === match.team1 ? "winner" : ""
+									}`;
+									team1Div.innerHTML = `
+										<span class="team-name">${match.team1}</span>
+										<span class="team-score">${match.score1 !== null ? match.score1 : "-"}</span>
+									`;
+									matchDiv.appendChild(team1Div);
+
+									const team2Div = document.createElement("div");
+									team2Div.className = `match-team ${
+										match.winner === match.team2 ? "winner" : ""
+									}`;
+									team2Div.innerHTML = `
+										<span class="team-name">${match.team2}</span>
+										<span class="team-score">${match.score2 !== null ? match.score2 : "-"}</span>
+									`;
+									matchDiv.appendChild(team2Div);
+
+									if (match.time) {
+										const timeDiv = document.createElement("div");
+										timeDiv.className = "match-time";
+										timeDiv.textContent = match.time;
+										matchDiv.appendChild(timeDiv);
+									}
+
+									roundDiv.appendChild(matchDiv);
+								});
+
+								detailBracketContainer.appendChild(roundDiv);
+							}
+						});
+					}, 100);
+
+					$("#tournamentDetailModal").modal("show");
+				}
+			}
+
+			// Save tournament
+			function saveTournament() {
+				const form = document.getElementById("tournamentForm");
+
+				// Basic validation
+				const tournamentName = document.getElementById("tournamentName").value;
+				const tournamentFormat =
+					document.getElementById("tournamentFormat").value;
+				const maxTeams = document.getElementById("maxTeams").value;
+				const startDate = document.getElementById("startDate").value;
+				const registrationFee =
+					document.getElementById("registrationFee").value;
+				const prizePool = document.getElementById("prizePool").value;
+
+				if (
+					!tournamentName ||
+					!tournamentFormat ||
+					!maxTeams ||
+					!startDate ||
+					!registrationFee ||
+					!prizePool
+				) {
+					alert("Harap lengkapi semua field yang wajib diisi!");
+					return;
+				}
+
+				// Simulate saving
+				alert("Turnamen berhasil dibuat!");
+				$("#newTournamentModal").modal("hide");
+				form.reset();
+			}
+
+			// Initialize page
+			$(document).ready(function () {
+				// Initialize DataTable
+				$("#tournamentsTable").DataTable({
+					language: {
+						url: "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json",
+					},
+				});
+
+				// Generate bracket for Summer Cup
+				generateBracket(tournaments["summer-cup-2025"]);
+
+				// Set minimum dates
+				const today = new Date().toISOString().split("T")[0];
+				document.getElementById("startDate").min = today;
+				document.getElementById("endDate").min = today;
+				document.getElementById("registrationDeadline").min = today;
+
+				// Save tournament button
+				document
+					.getElementById("saveTournament")
+					.addEventListener("click", saveTournament);
+
+				// Update end date minimum when start date changes
+				document
+					.getElementById("startDate")
+					.addEventListener("change", function () {
+						document.getElementById("endDate").min = this.value;
+					});
+			});
+		</script>
+	</body>
+</html>

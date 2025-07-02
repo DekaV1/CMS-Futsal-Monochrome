@@ -1,0 +1,30 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    /* Pastikan topbar berada di atas sidebar */
+}
+
+#content-wrapper {
+    margin-left: 250px;
+    /* Sesuaikan dengan lebar sidebar */
+    padding-top: 5.575rem;
+    /* Sesuaikan dengan tinggi topbar */
+}
+
+.sidebar {
+    position: fixed;
+    /* Membuat sidebar tetap di posisi awal */
+    top: 0;
+    /* Jarak dari atas */
+    left: 0;
+    /* Jarak dari kiri */
+    height: 100%;
+    /* Memastikan sidebar memiliki tinggi penuh */
+    z-index: 1060;
+    /* Pastikan sidebar berada di atas elemen lainnya */
+    overflow-y: auto;
+    /* Agar sidebar tetap bisa di-scroll jika konten terlalu panjang */
+}

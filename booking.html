@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>Booking Management</title>
+
+    <!-- Custom fonts for this template-->
+    <link
+      href="assets/vendor/fontawesome-free/css/all.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet"
+    />
+
+    <!-- Custom styles for this template-->
+    <link href="assets/css/sb-admin-2.min.css" rel="stylesheet" />
+    <link href="assets/css/style-bar.css" rel="stylesheet" />
+    <link
+      href="assets/vendor/datatables/dataTables.bootstrap4.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      .booking-card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      }
+
+      .booking-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.25rem 2rem 0 rgba(58, 59, 69, 0.2);
+      }
+
+      .field-schedule {
+        background: #f8f9fc;
+        border-radius: 0.35rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .time-slot {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        margin: 0.125rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .time-slot.available {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .time-slot.available:hover {
+        background-color: #c3e6cb;
+      }
+
+      .time-slot.booked {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        cursor: not-allowed;
+      }
+
+      .time-slot.selected {
+        background-color: #007bff;
+        color: white;
+        border: 1px solid #007bff;
+      }
+
+      .booking-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .status-confirmed {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .status-cancelled {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .status-completed {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .booking-form {
+        background: white;
+        border-radius: 0.35rem;
+        padding: 1.5rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      }
+
+      .field-preview {
+        background: #f8f9fc;
+        border-radius: 0.35rem;
+        padding: 1rem;
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+
+      .field-preview img {
+        width: 100%;
+        max-width: 200px;
+        border-radius: 0.35rem;
+      }
+
+      .price-display {
+        background: #e3f2fd;
+        border-radius: 0.35rem;
+        padding: 1rem;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .price-amount {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #1976d2;
+      }
+    </style>
+  </head>
+
+  <body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <ul
+        class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+      >
+        <!-- Sidebar - Brand -->
+        <a
+          class="sidebar-brand d-flex align-items-center justify-content-center"
+          href="index.html"
+        >
+          <img
+            src="assets/img/logo-lapangin.png"
+            style="height: 50px; width: 50px"
+          />
+          <div class="sidebar-brand-text mx-3">Lapangin</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider" />
+
+        <!-- Nav Items -->
+        <li class="nav-item">
+          <a class="nav-link" href="dashboard.html">
+            <img
+              src="assets/img/icdashboard.png"
+              style="height: 25px; width: 25px"
+            />
+            <span>Dashboard</span></a
+          >
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="booking.html">
+            <img
+              src="assets/img/ickelolabooking.png"
+              style="height: 25px; width: 25px"
+            />
+            <span>Booking</span></a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="turnamen.html">
+            <img
+              src="assets/img/ickelolaturnamen.png"
+              style="height: 25px; width: 25px"
+            />
+            <span>Turnamen</span></a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Lapangan.html">
+            <img
+              src="assets/img/ickelolalapangan.png"
+              style="height: 25px; width: 25px"
+            />
+            <span>Lapangan</span></a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="unduh.html">
+            <img
+              src="assets/img/icunduhlaporan.png"
+              style="height: 25px; width: 25px; margin-right: 6px"
+            />
+            <span>Unduh Laporan</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">
+            <img
+              src="assets/img/ickeluar.png"
+              style="height: 25px; width: 25px"
+            />
+            <span>Keluar</span></a
+          >
+        </li>
+      </ul>
+      <!-- End of Sidebar -->
+
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+          <!-- Topbar -->
+          <nav
+            class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+          >
+            <!-- Sidebar Toggle (Topbar) -->
+            <button
+              id="sidebarToggleTop"
+              class="btn btn-link d-md-none rounded-circle mr-3"
+            >
+              <i class="fa fa-bars"></i>
+            </button>
+
+            <!-- Topbar Navbar -->
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item dropdown no-arrow">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="userDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <div class="mr-2 text-gray-600 small d-block">Admin</div>
+                  <div class="mr-2 text-gray-600 small d-block">
+                    Lapangin Futsal
+                  </div>
+                  <div class="topbar-divider d-none d-sm-block"></div>
+                  <div class="mr-2 text-gray-600 d-block">Ferdy</div>
+                  <img
+                    class="img-profile rounded-circle"
+                    src="assets/img/profile/default.png"
+                  />
+                </a>
+                <!-- Dropdown - User Information -->
+                <div
+                  class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                  aria-labelledby="userDropdown"
+                >
+                  <a class="dropdown-item" href="#">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Profil
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    data-toggle="modal"
+                    data-target="#logoutModal"
+                  >
+                    <i
+                      class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
+                    ></i>
+                    Logout
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </nav>
+          <!-- End of Topbar -->
+
+          <!-- Begin Page Content -->
+          <div class="container-fluid">
+            <!-- Page Heading -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h1 class="h3 mb-0 text-gray-800">Booking Management</h1>
+              <button
+                class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#newBookingModal"
+              >
+                <i class="fas fa-plus fa-sm fa-fw mr-2"></i>
+                Booking Baru
+              </button>
+            </div>
+
+            <!-- Quick Stats Row -->
+            <div class="row mb-4">
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div
+                          class="text-xs font-weight-bold text-primary text-uppercase mb-1"
+                        >
+                          Booking Hari Ini
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          12
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div
+                          class="text-xs font-weight-bold text-success text-uppercase mb-1"
+                        >
+                          Booking Selesai
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          8
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div
+                          class="text-xs font-weight-bold text-warning text-uppercase mb-1"
+                        >
+                          Booking Pending
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          3
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i
+                          class="fas fa-hourglass-half fa-2x text-gray-300"
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div
+                          class="text-xs font-weight-bold text-info text-uppercase mb-1"
+                        >
+                          Total Pendapatan
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          Rp 950.000
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i
+                          class="fas fa-money-bill-wave fa-2x text-gray-300"
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Field Availability Section -->
+            <div class="row mb-4">
+              <div class="col-lg-12">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Ketersediaan Lapangan Hari Ini
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="field-schedule">
+                          <h6 class="font-weight-bold mb-3">
+                            <i class="fas fa-futbol mr-2"></i>Lapangan 1
+                          </h6>
+                          <div id="field1-schedule"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="field-schedule">
+                          <h6 class="font-weight-bold mb-3">
+                            <i class="fas fa-futbol mr-2"></i>Lapangan 2
+                          </h6>
+                          <div id="field2-schedule"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                      <small class="text-muted">
+                        <span class="mr-3"
+                          ><span class="time-slot available"
+                            >Tersedia</span
+                          ></span
+                        >
+                        <span class="mr-3"
+                          ><span class="time-slot booked">Terisi</span></span
+                        >
+                        <span class="mr-3"
+                          ><span
+                            class="time-slot pending"
+                            style="
+                              background-color: #ffe5b4;
+                              color: #b26a00;
+                              border: 1px solid #ffd699;
+                            "
+                            >Pending</span
+                          ></span
+                        >
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Booking List -->
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Daftar Booking
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table
+                        class="table table-bordered"
+                        id="dataTable"
+                        width="100%"
+                        cellspacing="0"
+                      >
+                        <thead>
+                          <tr>
+                            <th>ID Booking</th>
+                            <th>Nama Customer</th>
+                            <th>Lapangan</th>
+                            <th>Tanggal</th>
+                            <th>Waktu</th>
+                            <th>Harga</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>BK001</td>
+                            <td>Ahmad Fadli</td>
+                            <td>Lapangan 1</td>
+                            <td>25/06/2025</td>
+                            <td>08:00 - 09:00</td>
+                            <td>Rp 75.000</td>
+                            <td>
+                              <span class="booking-status status-confirmed">Confirmed</span>
+                            </td>
+                            <td>
+                              <button
+                                class="btn btn-warning btn-sm"
+                                title="Edit"
+                                data-toggle="modal"
+                                data-target="#editBookingModal"
+                              >
+                                <i class="fas fa-edit"></i>
+                              </button>
+                              <button
+                                class="btn btn-danger btn-sm"
+                                title="Hapus"
+                              >
+                                <i class="fas fa-times"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>BK002</td>
+                            <td>Budi Santoso</td>
+                            <td>Lapangan 2</td>
+                            <td>25/06/2025</td>
+                            <td>10:00 - 12:00</td>
+                            <td>Rp 150.000</td>
+                            <td>
+                              <span class="booking-status status-pending">Pending</span>
+                            </td>
+                            <td>
+                              <button
+                                class="btn btn-warning btn-sm"
+                                title="Edit"
+                                data-toggle="modal"
+                                data-target="#editBookingModal"
+                              >
+                                <i class="fas fa-edit"></i>
+                              </button>
+                              <button
+                                class="btn btn-danger btn-sm"
+                                title="Hapus"
+                              >
+                                <i class="fas fa-times"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>BK003</td>
+                            <td>Citra Dewi</td>
+                            <td>Lapangan 1</td>
+                            <td>25/06/2025</td>
+                            <td>14:00 - 15:00</td>
+                            <td>Rp 75.000</td>
+                            <td>
+                              <span class="booking-status status-completed">Completed</span>
+                            </td>
+                            <td>
+                              <button
+                                class="btn btn-warning btn-sm"
+                                title="Edit"
+                                data-toggle="modal"
+                                data-target="#editBookingModal"
+                              >
+                                <i class="fas fa-edit"></i>
+                              </button>
+                              <button
+                                class="btn btn-danger btn-sm"
+                                title="Hapus"
+                              >
+                                <i class="fas fa-times"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>BK004</td>
+                            <td>Dodi Rahman</td>
+                            <td>Lapangan 2</td>
+                            <td>25/06/2025</td>
+                            <td>16:00 - 18:00</td>
+                            <td>Rp 150.000</td>
+                            <td>
+                              <span class="booking-status status-pending">Pending</span>
+                            </td>
+                            <td>
+                              <button
+                                class="btn btn-warning btn-sm"
+                                title="Edit"
+                                data-toggle="modal"
+                                data-target="#editBookingModal"
+                              >
+                                <i class="fas fa-edit"></i>
+                              </button>
+                              <button
+                                class="btn btn-danger btn-sm"
+                                title="Hapus"
+                              >
+                                <i class="fas fa-times"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>BK005</td>
+                            <td>Eka Pratama</td>
+                            <td>Lapangan 1</td>
+                            <td>25/06/2025</td>
+                            <td>19:00 - 20:00</td>
+                            <td>Rp 85.000</td>
+                            <td>
+                              <span class="booking-status status-confirmed">Confirmed</span>
+                            </td>
+                            <td>
+                              <button
+                                class="btn btn-warning btn-sm"
+                                title="Edit"
+                                data-toggle="modal"
+                                data-target="#editBookingModal"
+                              >
+                                <i class="fas fa-edit"></i>
+                              </button>
+                              <button
+                                class="btn btn-danger btn-sm"
+                                title="Hapus"
+                              >
+                                <i class="fas fa-times"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+
+                        <!-- Edit Booking Modal -->
+                        <div
+                          class="modal fade"
+                          id="editBookingModal"
+                          tabindex="-1"
+                          role="dialog"
+                          aria-labelledby="editBookingModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="editBookingModalLabel">
+                                  <i class="fas fa-edit mr-2"></i>Edit Booking
+                                </h5>
+                                <button
+                                  type="button"
+                                  class="close"
+                                  data-dismiss="modal"
+                                  aria-label="Close"
+                                >
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <form id="editBookingForm">
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      <div class="form-group">
+                                        <label for="editCustomerName">Nama Customer</label>
+                                        <input
+                                          type="text"
+                                          class="form-control"
+                                          id="editCustomerName"
+                                          required
+                                        />
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="editCustomerPhone">No. Telepon</label>
+                                        <input
+                                          type="tel"
+                                          class="form-control"
+                                          id="editCustomerPhone"
+                                          required
+                                        />
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="editCustomerEmail">Email</label>
+                                        <input
+                                          type="email"
+                                          class="form-control"
+                                          id="editCustomerEmail"
+                                        />
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="editBookingDate">Tanggal Booking</label>
+                                        <input
+                                          type="date"
+                                          class="form-control"
+                                          id="editBookingDate"
+                                          required
+                                        />
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="form-group">
+                                        <label for="editFieldSelect">Pilih Lapangan</label>
+                                        <select class="form-control" id="editFieldSelect" required>
+                                          <option value="">-- Pilih Lapangan --</option>
+                                          <option value="field1">Lapangan 1</option>
+                                          <option value="field2">Lapangan 2</option>
+                                        </select>
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="editTimeStart">Waktu Mulai</label>
+                                        <select class="form-control" id="editTimeStart" required>
+                                          <option value="">-- Pilih Waktu --</option>
+                                          <option value="08:00">08:00 - 10:00</option>
+                                          <option value="10:00">10:00 - 12:00</option>
+                                          <option value="12:00">12:00 - 14:00</option>
+                                          <option value="14:00">14:00 - 16:00</option>
+                                          <option value="16:00">16:00 - 18:00</option>
+                                          <option value="18:00">18:00 - 20:00</option>
+                                          <option value="20:00">20:00 - 22:00</option>
+                                        </select>
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="editPaymentMethod">Metode Pembayaran</label>
+                                        <select class="form-control" id="editPaymentMethod" required>
+                                          <option value="">-- Pilih Metode Pembayaran --</option>
+                                          <option value="cash">Tunai</option>
+                                          <option value="transfer">Transfer Bank</option>
+                                          <option value="ewallet">E-Wallet</option>
+                                        </select>
+                                      </div>
+                                      <div class="price-display">
+                                        <div class="text-sm text-muted">Total Harga</div>
+                                        <div class="price-amount" id="editTotalPrice">Rp 0</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="editNotes">Catatan Tambahan</label>
+                                    <textarea
+                                      class="form-control"
+                                      id="editNotes"
+                                      rows="3"
+                                      placeholder="Masukkan catatan atau permintaan khusus..."
+                                    ></textarea>
+                                  </div>
+                                </form>
+                              </div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal"
+                                >
+                                  <i class="fas fa-times mr-2"></i>Batal
+                                </button>
+                                <button type="button" class="btn btn-primary" id="saveEditBooking">
+                                  <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.container-fluid -->
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+          <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+              <span>Copyright &copy; Lapangin 2023</span>
+            </div>
+          </div>
+        </footer>
+        <!-- End of Footer -->
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- New Booking Modal -->
+    <div
+      class="modal fade"
+      id="newBookingModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="newBookingModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newBookingModalLabel">
+              <i class="fas fa-plus-circle mr-2"></i>Booking Baru
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="bookingForm">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="customerName">Nama Customer</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="customerName"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="customerPhone">No. Telepon</label>
+                    <input
+                      type="tel"
+                      class="form-control"
+                      id="customerPhone"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="customerEmail">Email</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="customerEmail"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="bookingDate">Tanggal Booking</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="bookingDate"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="fieldSelect">Pilih Lapangan</label>
+                    <select class="form-control" id="fieldSelect" required>
+                      <option value="">-- Pilih Lapangan --</option>
+                      <option value="field1">Lapangan 1</option>
+                      <option value="field2">Lapangan 2</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="timeStart">Waktu Mulai</label>
+                    <select class="form-control" id="timeStart" required>
+                      <option value="">-- Pilih Waktu --</option>
+                      <option value="08:00">08:00 - 10:00</option>
+                      <option value="10:00">10:00 - 12:00</option>
+                      <option value="12:00">12:00 - 14:00</option>
+                      <option value="14:00">14:00 - 16:00</option>
+                      <option value="16:00">16:00 - 18:00</option>
+                      <option value="18:00">18:00 - 20:00</option>
+                      <option value="20:00">20:00 - 22:00</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="paymentMethod">Metode Pembayaran</label>
+                    <select class="form-control" id="paymentMethod" required>
+                      <option value="">-- Pilih Metode Pembayaran --</option>
+                      <option value="cash">Tunai</option>
+                      <option value="transfer">Transfer Bank</option>
+                      <option value="ewallet">E-Wallet</option>
+                    </select>
+                  </div>
+                  <div class="price-display">
+                    <div class="text-sm text-muted">Total Harga</div>
+                    <div class="price-amount" id="totalPrice">Rp 0</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="notes">Catatan Tambahan</label>
+                <textarea
+                  class="form-control"
+                  id="notes"
+                  rows="3"
+                  placeholder="Masukkan catatan atau permintaan khusus..."
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              <i class="fas fa-times mr-2"></i>Batal
+            </button>
+            <button type="button" class="btn btn-primary" id="saveBooking">
+              <i class="fas fa-save mr-2"></i>Simpan Booking
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Modal-->
+    <div
+      class="modal fade"
+      id="logoutModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button
+              class="close"
+              type="button"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Select "Logout" below if you are ready to end your current session.
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <a class="btn btn-primary" href="index.html">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="assets/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="assets/js/sb-admin-2.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script>
+      // Sample data for field availability
+      const fieldSchedules = {
+        field1: [
+          { time: "08:00", status: "booked", customer: "Ahmad Fadli" },
+          { time: "09:00", status: "available" },
+          { time: "10:00", status: "available" },
+          { time: "11:00", status: "available" },
+          { time: "12:00", status: "available" },
+          { time: "13:00", status: "available" },
+          { time: "14:00", status: "booked", customer: "Citra Dewi" },
+          { time: "15:00", status: "available" },
+          { time: "16:00", status: "available" },
+          { time: "17:00", status: "available" },
+          { time: "18:00", status: "available" },
+          { time: "19:00", status: "booked", customer: "Eka Pratama" },
+          { time: "20:00", status: "available" },
+          { time: "21:00", status: "available" },
+        ],
+        field2: [
+          { time: "08:00", status: "available" },
+          { time: "09:00", status: "available" },
+          { time: "10:00", status: "booked", customer: "Budi Santoso" },
+          { time: "11:00", status: "booked", customer: "Budi Santoso" },
+          { time: "12:00", status: "available" },
+          { time: "13:00", status: "available" },
+          { time: "14:00", status: "available" },
+          { time: "15:00", status: "available" },
+          { time: "16:00", status: "available" },
+          { time: "17:00", status: "available" },
+          { time: "18:00", status: "available" },
+          { time: "19:00", status: "available" },
+          { time: "20:00", status: "available" },
+          { time: "21:00", status: "available" },
+        ],
+      };
+
+      function deleteBooking(row) {
+        if (confirm("Apakah Anda yakin ingin menghapus booking ini?")) {
+          // Hapus baris dari tabel
+          row.closest("tr").remove();
+          // Anda bisa menambahkan proses backend di sini jika diperlukan
+        }
+      }
+
+      // Event delegation untuk tombol hapus pada tabel booking
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector("#dataTable tbody").addEventListener("click", function (e) {
+          if (e.target.closest(".btn-danger")) {
+            deleteBooking(e.target.closest("button"));
+          }
+        });
+      });
+      // Generate field schedules
+      function generateFieldSchedules() {
+        for (const fieldId in fieldSchedules) {
+          const container = document.getElementById(`${fieldId}-schedule`);
+          container.innerHTML = "";
+
+          fieldSchedules[fieldId].forEach((slot) => {
+            const slotElement = document.createElement("span");
+            slotElement.className = `time-slot ${slot.status}`;
+            slotElement.textContent = slot.time;
+
+            if (slot.status === "available") {
+              slotElement.onclick = () =>
+                selectTimeSlot(fieldId, slot.time, slotElement);
+            }
+
+            if (slot.customer) {
+              slotElement.title = `Booked by: ${slot.customer}`;
+            }
+
+            container.appendChild(slotElement);
+          });
+        }
+      }
+
+      // Select time slot for booking
+      function selectTimeSlot(fieldId, time, element) {
+        // Remove previous selections
+        document.querySelectorAll(".time-slot.selected").forEach((el) => {
+          el.classList.remove("selected");
+          el.classList.add("available");
+        });
+
+        // Add selection to current slot
+        element.classList.remove("available");
+        element.classList.add("selected");
+
+        // Update form
+        document.getElementById("fieldSelect").value = fieldId;
+        document.getElementById("timeStart").value = time;
+
+        // Calculate price
+        calculatePrice();
+      }
+
+      // Calculate booking price (static Rp 90.000)
+      function calculatePrice() {
+        const time = document.getElementById("timeStart").value;
+        if (time) {
+          document.getElementById("totalPrice").textContent =
+            "Rp " + Number(90000).toLocaleString("id-ID");
+        } else {
+          document.getElementById("totalPrice").textContent = "Rp 0";
+        }
+      }
+
+      // Save booking
+      function saveBooking() {
+        const form = document.getElementById("bookingForm");
+        const formData = new FormData(form);
+
+        // Basic validation
+        const customerName = document.getElementById("customerName").value;
+        const customerPhone = document.getElementById("customerPhone").value;
+        const bookingDate = document.getElementById("bookingDate").value;
+        const field = document.getElementById("fieldSelect").value;
+        const timeStart = document.getElementById("timeStart").value;
+        const duration = document.getElementById("duration").value;
+
+        if (
+          !customerName ||
+          !customerPhone ||
+          !bookingDate ||
+          !field ||
+          !timeStart ||
+          !duration
+        ) {
+          alert("Harap lengkapi semua field yang wajib diisi!");
+          return;
+        }
+
+        // Simulate saving (in real app, this would be an API call)
+        alert("Booking berhasil disimpan!");
+        $("#newBookingModal").modal("hide");
+
+        // Reset form
+        form.reset();
+        document.getElementById("totalPrice").textContent = "Rp 0";
+
+        // Remove any selected time slots
+        document.querySelectorAll(".time-slot.selected").forEach((el) => {
+          el.classList.remove("selected");
+          el.classList.add("available");
+        });
+      }
+
+      // Event listeners
+      $(document).ready(function () {
+        // Initialize DataTable
+        $("#dataTable").DataTable({
+          language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json",
+          },
+        });
+
+        // Generate field schedules
+        generateFieldSchedules();
+
+        // Set today's date as default
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("bookingDate").value = today;
+
+        // Event listeners for price calculation
+        document
+          .getElementById("fieldSelect")
+          .addEventListener("change", calculatePrice);
+        document
+          .getElementById("timeStart")
+          .addEventListener("change", calculatePrice);
+        document
+          .getElementById("duration")
+          .addEventListener("change", calculatePrice);
+
+        // Save booking button
+        document
+          .getElementById("saveBooking")
+          .addEventListener("click", saveBooking);
+      });
+    </script>
+  </body>
+</html>

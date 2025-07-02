@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login Lapangin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        height: 100%;
+        background-color: #7aaeff;
+        font-family: "Poppins", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .login-container {
+        border-radius: 1rem;
+        background: white;
+        width: 900px;
+        padding: 2rem 3rem;
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      }
+      .illustration {
+        flex: 1;
+      }
+      .illustration img {
+        width: 100%;
+        max-width: 400px;
+        display: block;
+        margin: 0 auto;
+      }
+      .login-form {
+        flex: 1;
+      }
+      .logo-text {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        font-size: 1.2rem;
+        margin-bottom: 0.2rem;
+      }
+      .logo-text img {
+        width: 2rem;
+        height: 2rem;
+      }
+      .login-title {
+        font-weight: 350;
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+      }
+      .form-control {
+        border-radius: 3rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        font-size: 1rem;
+        height: 3.3rem;
+        border: 1.5px solid #ddd;
+        transition: border-color 0.3s ease-in-out;
+      }
+      .form-control:focus {
+        border-color: #7aaeff;
+        box-shadow: 0 0 8px #7aaeffaa;
+      }
+      .btn-login {
+        border-radius: 3rem;
+        padding: 0.7rem 0;
+        font-size: 1.3rem;
+        font-weight: 350;
+        background-color: #649aff;
+        border: none;
+        box-shadow: 0 5px 10px #5985e0aa;
+		color: white;
+        transition: background-color 0.3s ease-in-out;
+      }
+      .btn-login:hover {
+        background-color: #4170ff;
+		color: white;
+      }
+      .text-links {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+      .text-links a {
+        color: #649aff;
+        text-decoration: none;
+        transition: text-decoration 0.2s;
+      }
+      .text-links a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 992px) {
+        .login-container {
+          flex-direction: column;
+          width: 250%;
+          max-width: 500px;
+          padding: 2rem;
+          margin: 1rem;
+        }
+        .illustration img {
+          max-width: 250px;
+          margin-bottom: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="login-container">
+      <section class="illustration">
+        <img src="assets/img/login-vector.png" alt="Ilustrasi Login" />
+      </section>
+      <section class="login-form">
+        <div style="margin-left: 130px">
+          <div class="logo-text">
+            <img src="assets/img/logo-joyflow.png" alt="Logo Lapangin" />
+            <span>Lapangin</span>
+          </div>
+        </div>
+        <div style="text-align: center; margin-left: 80px; margin-right: 80px">
+          <h2 class="login-title">Masuk</h2>
+        </div>
+
+        <form id="loginForm" autocomplete="off" novalidate>
+          <div class="mb-3">
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              placeholder="Masukkan alamat email anda"
+              required
+            />
+            <div class="invalid-feedback">Mohon masukkan email yang valid.</div>
+          </div>
+          <div class="mb-4">
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              placeholder="Masukkan kata sandi"
+              required
+              minlength="6"
+            />
+            <div class="invalid-feedback">
+              Kata sandi harus minimal 6 karakter.
+            </div>
+          </div>
+          <button type="submit" class="btn btn-login w-100">Masuk</button>
+        </form>
+        <div class="text-links text-center mt-3">
+          <a href="#" id="forgotPasswordLink">Lupa kata sandi?</a><br />
+        </div>
+      </section>
+    </main>
+
+    <!-- Bootstrap 5 JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      (() => {
+        "use strict";
+        const form = document.getElementById("loginForm");
+        form.addEventListener(
+          "submit",
+          function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+            } else {
+              event.preventDefault();
+              // Tampilkan pesan dan redirect setelah 1 detik
+              setTimeout(() => {
+                window.location.href = "dashboard.html";
+              }, 0);
+            }
+            form.classList.add("was-validated");
+          },
+          false
+        );
+      })();
+
+      // Optional: You can add handlers for forgot password and register link here
+      document
+        .getElementById("forgotPasswordLink")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          window.location.href = "lupasandi.html";
+        });
+    </script>
+  </body>
+</html>
